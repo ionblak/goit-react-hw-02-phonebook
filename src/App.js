@@ -1,68 +1,64 @@
 import React, { Component } from 'react';
 
-import { v4 as uuidv4 } from 'uuid';
+import Container from './Component/Container';
+import ContactList from './Component/ContactList';
+import Filter from './Component/Filter';
+import ContactForm from './Component/ContactForm';
 
 class App extends Component {
   state = {
-    contacts: [],
-    name: '',
-    number: '',
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
   };
 
-  labelInputIdName = uuidv4();
-  labelInputIdNumber = uuidv4();
-
-  handleChange = e => {
-    const { name, value } = e.currentTarget;
-
-    this.setState({
-      [name]: value,
-    });
-  };
-
-  handleSubmit = e => {
-    const { name, number } = this.state;
-    const contact = { id: uuidv4(), name, number };
-
-    e.preventDefault();
+  onSubmitForm = contact => {
+    const includedInContacts = this.state.contacts.find(
+      item => item.name === contact.name,
+    );
+    if (includedInContacts !== undefined) {
+      alert(`${contact.name} is already in contacts`);
+      return;
+    }
     this.setState(prevState => {
       return { contacts: [contact, ...prevState.contacts] };
     });
-
-    this.resetForm();
   };
 
-  resetForm = () => {
-    this.setState({ name: '', number: '' });
+  handleChange = e => {
+    this.setState({
+      filter: e.currentTarget.value,
+    });
   };
+
+  DeleteContact = id => {
+    this.setState(prevState => {
+      return {
+        contacts: prevState.contacts.filter(contact => contact.id !== id),
+      };
+    });
+  };
+
   render() {
+    const { contacts, filter } = this.state;
+    const filteredContacts = contacts.filter(contact => {
+      return contact.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
+    });
     return (
-      <>
-        <h2>Phonebook</h2>
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor={this.labelInputIdName}>Name</label>
-          <input
-            id={this.labelInputIdName}
-            type="text"
-            name="name"
-            placeholder="Enter name"
-            value={this.state.name}
-            onChange={this.handleChange}
-          ></input>
-          <label htmlFor={this.labelInputIdNumber}>Number</label>
-          <input
-            id={this.labelInputIdNumber}
-            type="tel"
-            name="number"
-            placeholder="Enter you number"
-            value={this.state.number}
-            onChange={this.handleChange}
-          ></input>
-          <button type="submit">Add contact</button>
-        </form>
+      <Container>
+        <h1>Phonebook</h1>
+        <ContactForm onSubmitForm={this.onSubmitForm} />
         <h2>Contacts</h2>
-        <ul></ul>
-      </>
+        <Filter value={filter} onHandleChange={this.handleChange} />
+        <ContactList
+          filteredContacts={filteredContacts}
+          onDeleteContact={this.DeleteContact}
+        />
+      </Container>
     );
   }
 }
