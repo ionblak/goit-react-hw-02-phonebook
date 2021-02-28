@@ -16,7 +16,7 @@ class App extends Component {
     filter: '',
   };
 
-  onSubmitForm = contact => {
+  handleSubmitForm = contact => {
     const includedInContacts = this.state.contacts.find(
       item => item.name === contact.name,
     );
@@ -47,9 +47,9 @@ class App extends Component {
     const { contacts, filter } = this.state;
 
     const normalizedFilter = filter.toLowerCase();
-    return contacts.filter(contact => {
-      return contact.name.toLowerCase().includes(normalizedFilter);
-    });
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter),
+    );
   };
 
   render() {
@@ -58,7 +58,7 @@ class App extends Component {
     return (
       <Container>
         <h1>Phonebook</h1>
-        <ContactForm onSubmitForm={this.onSubmitForm} />
+        <ContactForm onSubmitForm={this.handleSubmitForm} />
         <h2>Contacts</h2>
         <Filter value={filter} onHandleChange={this.handleChange} />
         <ContactList

@@ -4,12 +4,12 @@ import ButtonForm from './ButtonForm';
 import styles from './ContactForm.module.css';
 
 import { v4 as uuidv4 } from 'uuid';
-
+const INITIAL_STATE = {
+  name: '',
+  number: '',
+};
 class Contactform extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+  state = INITIAL_STATE;
 
   handleSubmit = e => {
     const { name, number } = this.state;
@@ -20,17 +20,13 @@ class Contactform extends Component {
     this.resetForm();
   };
 
-  handleChange = e => {
-    const { name, value } = e.currentTarget;
-    if (name)
-      this.setState({
-        [name]: value,
-      });
+  handleChange = ({ currentTarget }) => {
+    const { name, value } = currentTarget;
+
+    this.setState({ [name]: value });
   };
 
-  resetForm = () => {
-    this.setState({ name: '', number: '' });
-  };
+  resetForm = () => this.setState(INITIAL_STATE);
 
   labelInputIdName = uuidv4();
   labelInputIdNumber = uuidv4();
